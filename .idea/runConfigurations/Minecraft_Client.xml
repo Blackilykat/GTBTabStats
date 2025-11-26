@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" factoryName="Application" name="Minecraft Client" type="Application">
+    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main"/>
+    <module name="GTB_Tab_Stats.main"/>
+    <option name="PROGRAM_PARAMETERS" value="--username Blackilykat --uuid cf9f9198-7150-442d-8dcf-2f8b90d0417f"/>
+    <shortenClasspath name="ARGS_FILE"/>
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=$PROJECT_DIR$/../GTB@@0020Tab@@0020Stats/.gradle/loom-cache/launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient"/>
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/"/>
+    <extension name="de.eudaemon.ideaswag.SwingspectorExtension">
+      <Swingspector>
+        <keystroke code="59" modifiers="130"/>
+        <active value="false"/>
+        <timeout>5.0</timeout>
+      </Swingspector>
+    </extension>
+    <method v="2">
+      <option enabled="true" name="Make"/>
+    </method>
+  <classpathModifications/></configuration>
+</component>

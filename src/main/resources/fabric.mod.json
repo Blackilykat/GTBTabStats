@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "gtb-tab-stats",
+  "version": "${version}",
+  "name": "GTB Tab Stats",
+  "description": "Mod that adds Hypixel Guess The Build statistics in tab",
+  "authors": ["Blackilykat"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/gtb-tab-stats/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.blackilykat.gtbTabStats.GTBTabStats"
+    ]
+  },
+  "mixins": [
+    "gtb-tab-stats.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": ">=1.21.9"
+  }
+}
