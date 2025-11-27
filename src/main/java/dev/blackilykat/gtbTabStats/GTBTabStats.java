@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.UUID;
 
 public class GTBTabStats implements ClientModInitializer {
-	public static final String API_KEY = "not yet :')";
+	public static final String API_KEY = "to hypixel reviewers: this variable is temporary! I will not share my actual API key here.";
 
 	@Override
 	public void onInitializeClient() {
