@@ -1,3 +1,5 @@
-/.gradle
-/build
-/run
+client/.gradle
+client/build
+client/run
+server/run
+server/build
