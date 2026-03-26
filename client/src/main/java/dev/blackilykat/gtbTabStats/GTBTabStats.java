@@ -1,9 +1,8 @@
 package dev.blackilykat.gtbTabStats;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import net.fabricmc.api.ClientModInitializer;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -12,8 +11,7 @@ import java.net.URL;
 import java.util.UUID;
 
 public class GTBTabStats implements ClientModInitializer {
-	public static final String API_KEY = "to hypixel reviewers: this variable is temporary! I will not share my actual API key here.";
-
+	private static final Gson GSON = new Gson();
 	@Override
 	public void onInitializeClient() {
 	}
@@ -21,39 +19,22 @@ public class GTBTabStats implements ClientModInitializer {
 	public static Stats getStats(UUID uuid) {
 		Stats toReturn = new Stats();
 		try {
-			URL url = URI.create("https://api.hypixel.net/v2/player?uuid=" + uuid.toString()).toURL();
+			URL url = URI.create("https://gtb-tab-stats.blackilykat.dev/api/profile/" + uuid.toString()).toURL();
 
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-
-			conn.setRequestProperty("API-Key", API_KEY);
 
 			int r = conn.getResponseCode();
 			if(r != 200) {
 				return null;
 			} else {
-				JSONParser parser = new JSONParser();
-				JSONObject o = (JSONObject) parser.parse(conn.getInputStream());
-				JSONObject jsonPlayer = (JSONObject) o.get("player");
+				JsonObject o = GSON.fromJson(new String(conn.getInputStream().readAllBytes()), JsonObject.class);
 
-				if(jsonPlayer == null) {
-					return null;
-				}
-
-				toReturn.language = jsonPlayer.getAsString("userLanguage");
-				if(toReturn.language == null) toReturn.language = "ENGLISH";
-
-				JSONObject stats = (JSONObject) jsonPlayer.get("stats");
-				if(stats != null) {
-					JSONObject bb = (JSONObject) stats.get("BuildBattle");
-					if(bb != null) {
-						Number t = bb.getAsNumber("wins_guess_the_build");
-						if(t != null) toReturn.wins = t.intValue();
-						t = bb.getAsNumber("score");
-						if(t != null) toReturn.score = t.intValue();
-					}
-				}
+				toReturn.language = o.get("language").getAsString();
+				if(toReturn.language == null || toReturn.language.isEmpty()) toReturn.language = "ENGLISH";
+				toReturn.wins = o.get("wins").getAsInt();
+				toReturn.score= o.get("score").getAsInt();
 			}
-		} catch(IOException | ParseException e) {
+		} catch(IOException e) {
 			return null;
 		}
 		return toReturn;

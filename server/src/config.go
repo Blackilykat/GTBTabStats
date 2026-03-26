@@ -8,6 +8,7 @@ import (
 type Config struct {
 	ApiKey  string
 	Address string
+	CacheDurationHours float64
 }
 
 func LoadConfig() Config {

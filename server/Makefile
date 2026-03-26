@@ -5,6 +5,7 @@ build: $(SRC)
 	go build -o build/main ./src
 
 run:
+	mkdir -p run
 	cd run; go run ../src
 
 clean:
