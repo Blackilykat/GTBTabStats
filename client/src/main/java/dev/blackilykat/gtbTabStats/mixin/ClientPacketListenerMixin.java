@@ -10,10 +10,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.world.scores.PlayerTeam;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +24,8 @@ import java.util.concurrent.Executors;
 
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin {
+
+	@Shadow public abstract Collection<PlayerInfo> getListedOnlinePlayers();
 
 	@Unique
 	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(10);
@@ -45,12 +49,17 @@ public abstract class ClientPacketListenerMixin {
 			EXECUTOR.submit(() -> {
 				Stats stats = GTBTabStats.getStats(uuid);
 				if(stats == null) {
-					System.out.println("nooo :(");
 					return;
 				}
 				STATS_CACHE.put(uuid, stats);
 
-				playerInfo.setTabListDisplayName(makeDisplayName(playerInfo, stats));
+				// prevent race condition, get the most up-to-date player info
+				for(PlayerInfo currentPlayerInfo : getListedOnlinePlayers()) {
+					if(playerInfo.getProfile().id().equals(currentPlayerInfo.getProfile().id())) {
+						playerInfo.setTabListDisplayName(makeDisplayName(currentPlayerInfo, stats));
+						break;
+					}
+				}
 			});
 		}
 
