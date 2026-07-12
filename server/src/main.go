@@ -85,9 +85,11 @@ func main() {
 		}
 
 		cacheMutex.RLock()
-		defer cacheMutex.RUnlock()
 
 		cached, wasCached := cache[uuid]
+
+		cacheMutex.RUnlock()
+
 		if wasCached {
 			cached.RWMutex.RLock()
 
@@ -106,8 +108,12 @@ func main() {
 				cached.RWMutex.RUnlock()
 			}
 		} else {
+			cacheMutex.Lock()
+
 			cache[uuid] = &struct{*Player; *sync.RWMutex}{nil, &sync.RWMutex{}}
 			cached = cache[uuid]
+
+			cacheMutex.Unlock()
 		}
 
 		cached.RWMutex.Lock()

@@ -6,7 +6,7 @@ build: $(SRC)
 
 run:
 	mkdir -p run
-	cd run; go run ../src
+	cd run; go run -race ../src
 
 clean:
 	rm -rf build
