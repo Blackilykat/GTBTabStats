@@ -30,28 +30,34 @@ public abstract class ClientPacketListenerMixin {
 	@Unique
 	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(10);
 
+	/// Never-expiring clientside cache of stats.
+	///
+	/// Uses usernames instead of UUIDs as keys for 2 reasons:
+	/// - to cache 404 results for nicked players, which get assigned UUIDs randomly every time they are loaded
+	/// - to avoid making a bagillion requests for NPCs in victory dances
 	@Unique
-	private static final Map<UUID, Stats> STATS_CACHE = new HashMap<>();
+	private static final Map<String, Stats> STATS_CACHE = new HashMap<>();
 
 	@ModifyVariable(method = "applyPlayerInfoUpdate", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public ClientboundPlayerInfoUpdatePacket.Entry GTBTabStats$something(ClientboundPlayerInfoUpdatePacket.Entry entry, @Local(argsOnly = true) PlayerInfo playerInfo, @Local(argsOnly = true) ClientboundPlayerInfoUpdatePacket.Action action) {
 		UUID uuid = playerInfo.getProfile().id();
+		String username = playerInfo.getProfile().name();
 
-		if(STATS_CACHE.containsKey(uuid)) {
-			Stats stats = STATS_CACHE.get(uuid);
+		if(STATS_CACHE.containsKey(username)) {
+			Stats stats = STATS_CACHE.get(username);
 			if(stats == null) return entry;
 
 			return getUpdatedEntry(entry, playerInfo, stats);
 		}
 
 		if(playerInfo.getGameMode().isCreative() || playerInfo.getProfile().id().equals(Minecraft.getInstance().getGameProfile().id())) {
-			STATS_CACHE.put(uuid, null);
+			STATS_CACHE.put(username, null);
 			EXECUTOR.submit(() -> {
 				Stats stats = GTBTabStats.getStats(uuid);
 				if(stats == null) {
 					return;
 				}
-				STATS_CACHE.put(uuid, stats);
+				STATS_CACHE.put(username, stats);
 
 				// prevent race condition, get the most up-to-date player info
 				for(PlayerInfo currentPlayerInfo : getListedOnlinePlayers()) {
