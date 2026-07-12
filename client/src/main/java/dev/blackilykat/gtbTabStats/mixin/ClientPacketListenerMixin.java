@@ -3,6 +3,8 @@ package dev.blackilykat.gtbTabStats.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.blackilykat.gtbTabStats.GTBTabStats;
 import dev.blackilykat.gtbTabStats.Stats;
+import dev.blackilykat.gtbTabStats.Title;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -100,9 +102,24 @@ public abstract class ClientPacketListenerMixin {
 		if(prefix == null ) prefix = Component.empty();
 		if(suffix == null ) suffix = Component.empty();
 
-		//noinspection NoTranslation
-		return prefix.copy().append(Component.literal(playerInfo.getProfile().name()).withColor(color).append(suffix)).append(Component.translatable(" (%s, %s wins, %s score)", stats.language.toLowerCase(), stats.wins, stats.score).withColor(0x777777));
+		Title title = Title.getTitle(stats.score);
 
+		//noinspection NoTranslation
+		return prefix.copy()
+				.append(
+						Component.literal(playerInfo.getProfile().name())
+								.withColor(color)
+								.append(suffix)
+				)
+				.append(
+						Component.translatable(" (%s, %s wins, %s score)",
+								stats.language.toLowerCase(),
+								stats.wins,
+								Component.literal(String.valueOf(stats.score))
+										.withColor(title.colorAsInt())
+										.withStyle(title.bold() ? new ChatFormatting[]{ChatFormatting.BOLD} : new ChatFormatting[0])
+						).withColor(0x777777)
+				);
 	}
 
 }

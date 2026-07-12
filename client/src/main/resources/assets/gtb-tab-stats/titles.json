@@ -1,0 +1,21 @@
+[
+	{ "score": 0,      "title": "Rookie",      "bold": false, "color":"FFFFFF" },
+	{ "score": 100,    "title": "Untrained",   "bold": false, "color":"AAAAAA" },
+	{ "score": 250,    "title": "Amateur",     "bold": false, "color":"555555" },
+	{ "score": 500,    "title": "Prospect",    "bold": false, "color":"55FF55" },
+	{ "score": 1000,   "title": "Apprentice",  "bold": false, "color":"00AA00" },
+	{ "score": 2000,   "title": "Experienced", "bold": false, "color":"55FFFF" },
+	{ "score": 3500,   "title": "Seasoned",    "bold": false, "color":"00AAAA" },
+	{ "score": 5000,   "title": "Trained",     "bold": false, "color":"5555FF" },
+	{ "score": 7500,   "title": "Skilled",     "bold": false, "color":"0000AA" },
+	{ "score": 10000,  "title": "Talented",    "bold": false, "color":"AA00AA" },
+	{ "score": 15000,  "title": "Professional","bold": false, "color":"FF55FF" },
+	{ "score": 20000,  "title": "Artisan",     "bold": false, "color":"FF5555" },
+	{ "score": 30000,  "title": "Expert",      "bold": false, "color":"AA0000" },
+	{ "score": 50000,  "title": "Master",      "bold": false, "color":"AAAA00" },
+	{ "score": 100000, "title": "Legend",      "bold": true,  "color":"55FF55" },
+	{ "score": 200000, "title": "Grandmaster", "bold": true,  "color":"55FFFF" },
+	{ "score": 300000, "title": "Celestial",   "bold": true,  "color":"FF55FF" },
+	{ "score": 400000, "title": "Divine",      "bold": true,  "color":"FF5555" },
+	{ "score": 500000, "title": "Ascended",    "bold": true,  "color":"AAAA00" }
+]

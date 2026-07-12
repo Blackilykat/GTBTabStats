@@ -3,6 +3,8 @@ package dev.blackilykat.gtbTabStats;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.fabricmc.api.ClientModInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -11,9 +13,11 @@ import java.net.URL;
 import java.util.UUID;
 
 public class GTBTabStats implements ClientModInitializer {
-	private static final Gson GSON = new Gson();
+	public static final Logger LOGGER = LoggerFactory.getLogger("gtb-tab-stats");
+	public static final Gson GSON = new Gson();
 	@Override
 	public void onInitializeClient() {
+		Title.loadTitles();
 	}
 
 	public static Stats getStats(UUID uuid) {
