@@ -35,12 +35,12 @@ public class ChatComponentMixin {
 	private static final Pattern LAST_SECTION_SIGN = Pattern.compile(".+?(§.)");
 
 	@ModifyVariable(
-			method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V",
+			method = "addMessage",
 			at = @At("HEAD"),
 			argsOnly = true
 	)
-	public Component GTBTabStats$injectStatsHover(Component component) {
-		return withStatsHover(component);
+	public Component GTBTabStats$injectStatsHover(Component contents) {
+		return withStatsHover(contents);
 	}
 
 	// non mutable components are a lie made up by the government

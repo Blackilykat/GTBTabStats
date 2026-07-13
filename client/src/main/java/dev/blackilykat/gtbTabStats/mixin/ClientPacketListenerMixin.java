@@ -11,6 +11,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.TeamColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,18 +34,18 @@ public abstract class ClientPacketListenerMixin {
 	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(10);
 
 	@ModifyVariable(method = "applyPlayerInfoUpdate", at = @At("HEAD"), ordinal = 0, argsOnly = true)
-	public ClientboundPlayerInfoUpdatePacket.Entry GTBTabStats$something(ClientboundPlayerInfoUpdatePacket.Entry entry, @Local(argsOnly = true) PlayerInfo playerInfo, @Local(argsOnly = true) ClientboundPlayerInfoUpdatePacket.Action action) {
-		UUID uuid = playerInfo.getProfile().id();
-		String username = playerInfo.getProfile().name();
+	public ClientboundPlayerInfoUpdatePacket.Entry GTBTabStats$something(ClientboundPlayerInfoUpdatePacket.Entry entry, @Local(argsOnly = true, name = "info") PlayerInfo info) {
+		UUID uuid = info.getProfile().id();
+		String username = info.getProfile().name();
 
 		if(STATS_CACHE.containsKey(username)) {
 			Stats stats = STATS_CACHE.get(username);
 			if(stats == null) return entry;
 
-			return getUpdatedEntry(entry, playerInfo, stats);
+			return getUpdatedEntry(entry, info, stats);
 		}
 
-		if(playerInfo.getGameMode().isCreative() || playerInfo.getProfile().id().equals(Minecraft.getInstance().getGameProfile().id())) {
+		if(info.getGameMode().isCreative() || info.getProfile().id().equals(Minecraft.getInstance().getGameProfile().id())) {
 			STATS_CACHE.put(username, null);
 			EXECUTOR.submit(() -> {
 				Stats stats = GTBTabStats.getStats(uuid);
@@ -55,8 +56,8 @@ public abstract class ClientPacketListenerMixin {
 
 				// prevent race condition, get the most up-to-date player info
 				for(PlayerInfo currentPlayerInfo : getListedOnlinePlayers()) {
-					if(playerInfo.getProfile().id().equals(currentPlayerInfo.getProfile().id())) {
-						playerInfo.setTabListDisplayName(makeDisplayName(currentPlayerInfo, stats));
+					if(info.getProfile().id().equals(currentPlayerInfo.getProfile().id())) {
+						info.setTabListDisplayName(makeDisplayName(currentPlayerInfo, stats));
 						break;
 					}
 				}
@@ -87,7 +88,7 @@ public abstract class ClientPacketListenerMixin {
 		Component prefix = null;
 		Component suffix = null;
 		if(team != null) {
-			color = team.getColor().getColor() == null ? 0xFFFFFF : team.getColor().getColor();
+			color = team.getColor().orElse(TeamColor.WHITE).rgb();
 			prefix = team.getPlayerPrefix();
 			suffix = team.getPlayerSuffix();
 		}
