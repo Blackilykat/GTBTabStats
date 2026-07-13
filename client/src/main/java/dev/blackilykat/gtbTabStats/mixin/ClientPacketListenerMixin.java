@@ -88,7 +88,7 @@ public abstract class ClientPacketListenerMixin {
 		Component prefix = null;
 		Component suffix = null;
 		if(team != null) {
-			color = team.getColor().orElse(TeamColor.WHITE).rgb();
+			color = team.getColor().filter(c -> c.rgb() != 0).orElse(TeamColor.WHITE).rgb();
 			prefix = team.getPlayerPrefix();
 			suffix = team.getPlayerSuffix();
 		}
