@@ -18,11 +18,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static dev.blackilykat.gtbTabStats.GTBTabStats.STATS_CACHE;
 
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin {
@@ -31,14 +31,6 @@ public abstract class ClientPacketListenerMixin {
 
 	@Unique
 	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(10);
-
-	/// Never-expiring clientside cache of stats.
-	///
-	/// Uses usernames instead of UUIDs as keys for 2 reasons:
-	/// - to cache 404 results for nicked players, which get assigned UUIDs randomly every time they are loaded
-	/// - to avoid making a bagillion requests for NPCs in victory dances
-	@Unique
-	private static final Map<String, Stats> STATS_CACHE = new HashMap<>();
 
 	@ModifyVariable(method = "applyPlayerInfoUpdate", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public ClientboundPlayerInfoUpdatePacket.Entry GTBTabStats$something(ClientboundPlayerInfoUpdatePacket.Entry entry, @Local(argsOnly = true) PlayerInfo playerInfo, @Local(argsOnly = true) ClientboundPlayerInfoUpdatePacket.Action action) {
